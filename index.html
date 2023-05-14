@@ -1,66 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Beschleunigungsmesser</title>
+	<title>Beschleunigungssensor-Überwachung</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
+	<button onclick="startMonitoring()">Überwachung starten</button>
 
-<div class="container">
-	<p id="shake-status"></p>
-	<button id="request-sensor-access">Berechtigung für Sensoren anfordern</button>
-</div>
+	<script>
+		function startMonitoring() {
+			if (typeof DeviceMotionEvent.requestPermission === 'function') {
+				// Zustimmung des Benutzers einholen, um auf Beschleunigungssensoren zuzugreifen
+				DeviceMotionEvent.requestPermission().then(response => {
+					if (response == 'granted') {
+						// Ereignislistener hinzufügen, um Bewegungen des Geräts zu überwachen
+						window.addEventListener('devicemotion', handleMotionEvent);
+					}
+				}).catch(console.error);
+			} else {
+				// Das Gerät unterstützt keine Zustimmungserklärung, daher einfach Ereignislistener hinzufügen
+				window.addEventListener('devicemotion', handleMotionEvent);
+			}
+		}
 
-<script>
-if (window.DeviceMotionEvent) {
-  var permissionGranted = false;
-  var shakeStatus = false;
-  var lastShakeTime = 0;
-  var shakeThreshold = 15; // Schwellenwert für die Schüttelbewegung in m/s^2
+		function handleMotionEvent(event) {
+			// Schwellenwert für Bewegungserkennung festlegen
+			const threshold = 10;
 
-  function requestSensorAccess() {
-    if (typeof DeviceMotionEvent.requestPermission === 'function') {
-      DeviceMotionEvent.requestPermission().then(permissionState => {
-        if (permissionState === 'granted') {
-          permissionGranted = true;
-        }
-      }).catch(console.error);
-    }
-  }
+			// Beschleunigungsdaten des Geräts aus dem Event-Objekt abrufen
+			const { x, y, z } = event.accelerationIncludingGravity;
 
-  document.getElementById('request-sensor-access').addEventListener('click', requestSensorAccess);
+			// Berechnen Sie die Gesamtbeschleunigung des Geräts
+			const acceleration = Math.sqrt(x * x + y * y + z * z);
 
-  window.addEventListener("devicemotion", function(event) {
-    if (permissionGranted) {
-      var ax = event.accelerationIncludingGravity.x;
-      var ay = event.accelerationIncludingGravity.y;
-      var az = event.accelerationIncludingGravity.z;
-
-      // Berechnung der Beschleunigung ohne Integration, um die Schüttelbewegung zu ermitteln
-      var acceleration = Math.sqrt(ax * ax + ay * ay + az * az);
-      
-      // Prüfung, ob die Schüttelbewegung den Schwellenwert überschreitet
-      if (acceleration > shakeThreshold && (Date.now() - lastShakeTime) > 1000) {
-        shakeStatus = true;
-        lastShakeTime = Date.now();
-      } else {
-        shakeStatus = false;
-      }
-
-      // Ausgabe der Schüttelbewegung
-      if (shakeStatus) {
-        document.getElementById("shake-status").innerHTML = "Das Gerät wird geschüttelt.";
-      } else {
-        document.getElementById("shake-status").innerHTML = "Das Gerät wird nicht geschüttelt.";
-      }
-    }
-  });
-} else {
-  alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
-}
-</script>
-
+			if (acceleration > threshold) {
+				// Das Gerät wird geschüttelt, fügen Sie hier den Code ein, den Sie ausführen möchten.
+				console.log('Gerät wird geschüttelt!');
+			}
+		}
+	</script>
 </body>
 </html>
