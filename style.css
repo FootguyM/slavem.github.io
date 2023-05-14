@@ -1,32 +1,22 @@
-body {
-	margin: 0;
-	padding: 0;
-	font-family: Arial, sans-serif;
-	background-color: #f4f4f4;
-}
-
 .container {
-	max-width: 600px;
-	margin: 0 auto;
-	padding: 20px;
-	text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-p {
-	font-size: 20px;
-	margin-bottom: 10px;
+#speed {
+  font-size: 3rem;
+  margin-bottom: 2rem;
 }
 
-#request-sensor-access {
-	font-size: 16px;
-	padding: 10px 20px;
-	background-color: #4CAF50;
-	color: #fff;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	transition: background-color 0.3s ease;
+button {
+  font-size: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background-color: #0077FF;
+  color: white;
+  cursor: pointer;
 }
-
-#request-sensor-access:hover {
-	background-color: #3
