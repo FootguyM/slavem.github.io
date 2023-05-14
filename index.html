@@ -4,7 +4,6 @@
 	<title>Beschleunigungsmesser</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="style.css">
 	<style>
 		.container {
 			display: flex;
@@ -50,16 +49,14 @@
 				accelerationZ = event.accelerationIncludingGravity.z.toFixed(2);
 				var i = 0;
 				var intervalId = setInterval(function() {
-					setTimeout(function() {
-						document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + (accelerationX / (i + 1)).toFixed(2) + " m/s²";
-						document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + (accelerationY / (i + 1)).toFixed(2) + " m/s²";
-						document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + (accelerationZ / (i + 1)).toFixed(2) + " m/s²";
-						i++;
-						if (i == 10) {
-							clearInterval(intervalId);
-						}
-					}, i * 1000);
-				}, 11000);
+					document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + (accelerationX / (i + 1)).toFixed(2) + " m/s²";
+					document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + (accelerationY / (i + 1)).toFixed(2) + " m/s²";
+					document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + (accelerationZ / (i + 1)).toFixed(2) + " m/s²";
+					i++;
+					if (i == 10) {
+						clearInterval(intervalId);
+					}
+				}, 500);
 			}
 		});
 	} else {
