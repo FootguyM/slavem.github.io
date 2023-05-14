@@ -12,6 +12,9 @@
 	<p id="acceleration-x"></p>
 	<p id="acceleration-y"></p>
 	<p id="acceleration-z"></p>
+	<p id="velocity-x"></p>
+	<p id="velocity-y"></p>
+	<p id="velocity-z"></p>
 	<button id="request-sensor-access">Berechtigung für Sensoren anfordern</button>
 </div>
 
@@ -21,6 +24,10 @@
 		var accelerationX = 0;
 		var accelerationY = 0;
 		var accelerationZ = 0;
+		var velocityX = 0;
+		var velocityY = 0;
+		var velocityZ = 0;
+		var lastUpdate = Date.now();
 		var updateInterval = 500; // Update-Intervall in Millisekunden
 
 		function requestSensorAccess() {
@@ -37,17 +44,37 @@
 
 		window.addEventListener("devicemotion", function(event) {
 			if (permissionGranted) {
-				accelerationX = event.acceleration.x.toFixed(2);
-				accelerationY = event.acceleration.y.toFixed(2);
-				accelerationZ = event.acceleration.z.toFixed(2);
+				var now = Date.now();
+				var dt = (now - lastUpdate) / 1000;
+				lastUpdate = now;
+
+				var ax = event.accelerationIncludingGravity.x;
+				var ay = event.accelerationIncludingGravity.y;
+				var az = event.accelerationIncludingGravity.z;
+
+				// Berechnung der Geschwindigkeit in den einzelnen Richtungen
+				velocityX += ax * dt;
+				velocityY += ay * dt;
+				velocityZ += az * dt;
+
+				// Berechnung der aktuellen Beschleunigung
+				accelerationX = ax.toFixed(2);
+				accelerationY = ay.toFixed(2);
+				accelerationZ = az.toFixed(2);
 			}
 		});
 
 		setInterval(function() {
 			if (permissionGranted) {
+				// Anzeige der Beschleunigung
 				document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
 				document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
 				document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
+
+				// Anzeige der Geschwindigkeit
+				document.getElementById("velocity-x").innerHTML = "Geschwindigkeit X: " + velocityX.toFixed(2) + " m/s";
+				document.getElementById("velocity-y").innerHTML = "Geschwindigkeit Y: " + velocityY.toFixed(2) + " m/s";
+				document.getElementById("velocity-z").innerHTML = "Geschwindigkeit Z: " + velocityZ.toFixed(2) + " m/s";
 			}
 		}, updateInterval);
 
