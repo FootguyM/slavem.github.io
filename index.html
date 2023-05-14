@@ -44,25 +44,44 @@
 
 		window.addEventListener("devicemotion", function(event) {
 			if (permissionGranted) {
-				accelerationX = event.accelerationIncludingGravity.x.toFixed(2);
-				accelerationY = event.accelerationIncludingGravity.y.toFixed(2);
-				accelerationZ = event.accelerationIncludingGravity.z.toFixed(2);
-				var i = 0;
-				var intervalId = setInterval(function() {
-					document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + (accelerationX / (i + 1)).toFixed(2) + " m/s²";
-					document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + (accelerationY / (i + 1)).toFixed(2) + " m/s²";
-					document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + (accelerationZ / (i + 1)).toFixed(2) + " m/s²";
-					i++;
-					if (i == 10) {
-						clearInterval(intervalId);
+				var accelerationXValues = [];
+				var accelerationYValues = [];
+				var accelerationZValues = [];
+
+				setInterval(function() {
+					// add current values to the arrays
+					accelerationXValues.push(event.accelerationIncludingGravity.x);
+					accelerationYValues.push(event.accelerationIncludingGravity.y);
+					accelerationZValues.push(event.accelerationIncludingGravity.z);
+
+					// remove values older than 1 second
+					var currentTime = new Date().getTime();
+					while (accelerationXValues.length > 0 && currentTime - accelerationXValues[0].timeStamp > 1000) {
+						accelerationXValues.shift();
+						accelerationYValues.shift();
+						accelerationZValues.shift();
 					}
-				}, 500);
+
+					// calculate averages of the remaining values
+					if (accelerationXValues.length > 0) {
+						accelerationX = accelerationXValues.reduce((a, b) => a + b) / accelerationXValues.length;
+						document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX.toFixed(2) + " m/s²";
+					}
+					if (accelerationYValues.length > 0) {
+						accelerationY = accelerationYValues.reduce((a, b) => a + b) / accelerationYValues.length;
+						document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY.toFixed(2) + " m/s²";
+					}
+					if (accelerationZValues.length > 0) {
+						accelerationZ = accelerationZValues.reduce((a, b) => a + b) / accelerationZValues.length;
+						document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ.toFixed(2) + " m/s²";
+					}
+				}, 1000);
 			}
 		});
 	} else {
 		alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
 	}
-</script>
+</script
 
 </body>
 </html>
