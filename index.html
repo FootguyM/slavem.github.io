@@ -10,6 +10,7 @@
 
 <div class="container">
 	<p id="speed"></p>
+	<p id="acceleration"></p>
 	<button id="request-sensor-access">Berechtigung für Sensoren anfordern</button>
 </div>
 
@@ -51,6 +52,7 @@
 					speed = Math.max(speed, 0); // speed cannot be negative
 
 					document.getElementById("speed").innerHTML = "Geschwindigkeit: " + speed.toFixed(2) + " m/s";
+					document.getElementById("acceleration").innerHTML = "Beschleunigung: (" + accelerationX.toFixed(2) + ", " + accelerationY.toFixed(2) + ", " + accelerationZ.toFixed(2) + ") m/s²";
 				}
 
 				lastAccelerationX = accelerationX;
