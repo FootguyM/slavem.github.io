@@ -16,6 +16,8 @@
 	<p id="acceleration">-</p>
 
 	<script>
+		const accelerationHistory = [];
+
 		function startMonitoring() {
 			if (typeof DeviceMotionEvent.requestPermission === 'function') {
 				// Zustimmung des Benutzers einholen, um auf Beschleunigungssensoren zuzugreifen
@@ -38,8 +40,9 @@
 			// Beschleunigungsdaten des Geräts aus dem Event-Objekt abrufen
 			const { x, y, z } = event.accelerationIncludingGravity;
 
-			// Berechnen Sie die Gesamtbeschleunigung des Geräts
-			const acceleration = Math.sqrt(x * x + y * y + z * z);
+			// Erdbeschleunigung abziehen
+			const g = 9.81;
+			const acceleration = z - g;
 
 			if (acceleration > threshold) {
 				// Das Gerät wird geschüttelt, fügen Sie hier den Code ein, den Sie ausführen möchten.
@@ -50,7 +53,6 @@
 			}
 
 			// Durchschnittliche Beschleunigung der letzten Sekunde berechnen und anzeigen
-			const accelerationHistory = [];
 			accelerationHistory.push(acceleration);
 			const now = Date.now();
 			const lastSecond = now - 1000;
