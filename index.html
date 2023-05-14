@@ -4,15 +4,6 @@
 	<title>Beschleunigungssensor-Überwachung</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<style>
-		body {
-		    background-color: red; /* Standard-Hintergrundfarbe */
-		}
-
-		.shaken {
-		    background-color: green; /* Hintergrundfarbe, wenn das Gerät geschüttelt wird */
-		}
-	</style>
 </head>
 <body>
 	<button onclick="startMonitoring()">Überwachung starten</button>
@@ -35,7 +26,7 @@
 
 		function handleMotionEvent(event) {
 			// Schwellenwert für Bewegungserkennung festlegen
-			const threshold = 5;
+			const threshold = 10;
 
 			// Beschleunigungsdaten des Geräts aus dem Event-Objekt abrufen
 			const { x, y, z } = event.accelerationIncludingGravity;
@@ -45,10 +36,7 @@
 
 			if (acceleration > threshold) {
 				// Das Gerät wird geschüttelt, fügen Sie hier den Code ein, den Sie ausführen möchten.
-				document.body.classList.add('shaken');
-			} else {
-				// Das Gerät wird nicht geschüttelt, entfernen Sie die CSS-Klasse "shaken"
-				document.body.classList.remove('shaken');
+				console.log('Gerät wird geschüttelt!');
 			}
 		}
 	</script>
