@@ -1,20 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Shake Meter</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<script src="script.js"></script>
+	<title>Beschleunigungsmesser</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			font-size: 2rem;
+		}
+	</style>
 </head>
 <body>
 
 <div class="container">
-	<div class="meter">
-		<div id="progress" class="progress"></div>
-	</div>
-	<div id="label" class="label">Shake Meter: 0</div>
+	<p id="acceleration-x"></p>
+	<p id="acceleration-y"></p>
+	<p id="acceleration-z"></p>
 </div>
 
+<script>
+	if (window.DeviceMotionEvent) {
+		window.addEventListener("devicemotion", function(event) {
+			var accelerationX = event.accelerationIncludingGravity.x.toFixed(2);
+			var accelerationY = event.accelerationIncludingGravity.y.toFixed(2);
+			var accelerationZ = event.accelerationIncludingGravity.z.toFixed(2);
+			document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
+			document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
+			document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
+		});
+	} else {
+		alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
+	}
+</script>
 
 </body>
 </html>
