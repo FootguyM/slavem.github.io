@@ -37,9 +37,9 @@
 
 		window.addEventListener("devicemotion", function(event) {
 			if (permissionGranted) {
-				accelerationX = event.accelerationIncludingGravity.x.toFixed(2);
-				accelerationY = event.accelerationIncludingGravity.y.toFixed(2);
-				accelerationZ = event.accelerationIncludingGravity.z.toFixed(2);
+				accelerationX = event.acceleration.x.toFixed(2);
+				accelerationY = event.acceleration.y.toFixed(2);
+				accelerationZ = event.acceleration.z.toFixed(2);
 			}
 		});
 
