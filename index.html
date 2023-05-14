@@ -6,24 +6,43 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
-
 <body>
 
 <div class="container">
 	<p id="acceleration-x"></p>
 	<p id="acceleration-y"></p>
 	<p id="acceleration-z"></p>
+	<button id="request-sensor-access">Berechtigung für Sensoren anfordern</button>
 </div>
 
 <script>
 	if (window.DeviceMotionEvent) {
+		var permissionGranted = false;
+		var accelerationX = 0;
+		var accelerationY = 0;
+		var accelerationZ = 0;
+
+		function requestSensorAccess() {
+			if (typeof DeviceMotionEvent.requestPermission === 'function') {
+				DeviceMotionEvent.requestPermission().then(permissionState => {
+					if (permissionState === 'granted') {
+						permissionGranted = true;
+					}
+				}).catch(console.error);
+			}
+		}
+
+		document.getElementById('request-sensor-access').addEventListener('click', requestSensorAccess);
+
 		window.addEventListener("devicemotion", function(event) {
-			var accelerationX = event.accelerationIncludingGravity.x.toFixed(2);
-			var accelerationY = event.accelerationIncludingGravity.y.toFixed(2);
-			var accelerationZ = event.accelerationIncludingGravity.z.toFixed(2);
-			document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
-			document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
-			document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
+			if (permissionGranted) {
+				accelerationX = event.accelerationIncludingGravity.x.toFixed(2);
+				accelerationY = event.accelerationIncludingGravity.y.toFixed(2);
+				accelerationZ = event.accelerationIncludingGravity.z.toFixed(2);
+				document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
+				document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
+				document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
+			}
 		});
 	} else {
 		alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
