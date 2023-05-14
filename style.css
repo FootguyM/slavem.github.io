@@ -1,86 +1,62 @@
-/* Globale Stile */
+/* Allgemeine Stildefinitionen */
+
 body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
 
-/* Header */
-header {
-  background-color: #333;
-  color: #fff;
-  padding: 1rem;
-}
+/* Stil für den Container */
 
-header h1 {
-  margin: 0;
-}
-
-/* Hauptinhalt */
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.container p {
-  margin: 0;
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-/* Button */
-#request-sensor-access {
-  background-color: #007bff;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-#request-sensor-access:hover {
-  background-color: #0069d9;
-}
-
-/* Footer */
-footer {
-  background-color: #333;
-  color: #fff;
-  padding: 1rem;
-  text-align: center;
-  margin-top: 1rem;
-}
-
-/* Medienabfragen */
-@media screen and (min-width: 768px) {
-  header {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    padding: 1rem 2rem;
-  }
-
-  header h1 {
-    font-size: 2rem;
-  }
-
-  #request-sensor-access {
-    font-size: 1.25rem;
-    padding: 0.75rem 1.5rem;
-  }
+    justify-content: center;
+    height: 100vh;
 }
 
-@media screen and (min-width: 992px) {
-  .container {
-    flex-direction: row;
-  }
+/* Stil für die Überschriften und den Button */
 
-  .container p {
-    font-size: 2rem;
-    margin-right: 1rem;
-  }
+h1, h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0069d9;
+}
+
+/* Stil für die Beschleunigungsinformationen */
+
+p {
+    margin: 20px 0;
+    font-size: 1.5rem;
+}
+
+/* Stil für mobile Geräte */
+
+@media only screen and (max-width: 600px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    button {
+        font-size: 1rem;
+    }
+
+    p {
+        font-size: 1.2rem;
+    }
 }
