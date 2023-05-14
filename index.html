@@ -8,62 +8,55 @@
 		body {
 			background-color: red;
 		}
-		.green {
-			background-color: green;
-		}
 	</style>
 </head>
 <body>
+	<h1>Beschleunigungssensor-Überwachung</h1>
 	<button onclick="startMonitoring()">Überwachung starten</button>
-	<p id="acceleration"></p>
+	<p id="acceleration">-</p>
 
 	<script>
-		let accelerationArray = [];
-		let averageAcceleration = 0;
-		let isShaken = false;
-
 		function startMonitoring() {
 			if (typeof DeviceMotionEvent.requestPermission === 'function') {
+				// Zustimmung des Benutzers einholen, um auf Beschleunigungssensoren zuzugreifen
 				DeviceMotionEvent.requestPermission().then(response => {
 					if (response == 'granted') {
+						// Ereignislistener hinzufügen, um Bewegungen des Geräts zu überwachen
 						window.addEventListener('devicemotion', handleMotionEvent);
 					}
 				}).catch(console.error);
 			} else {
+				// Das Gerät unterstützt keine Zustimmungserklärung, daher einfach Ereignislistener hinzufügen
 				window.addEventListener('devicemotion', handleMotionEvent);
 			}
-			setInterval(updateAcceleration, 1000);
 		}
 
 		function handleMotionEvent(event) {
+			// Schwellenwert für Bewegungserkennung festlegen
 			const threshold = 10;
+
+			// Beschleunigungsdaten des Geräts aus dem Event-Objekt abrufen
 			const { x, y, z } = event.accelerationIncludingGravity;
+
+			// Berechnen Sie die Gesamtbeschleunigung des Geräts
 			const acceleration = Math.sqrt(x * x + y * y + z * z);
 
 			if (acceleration > threshold) {
-				isShaken = true;
-			}
-			accelerationArray.push(acceleration);
-		}
-
-		function updateAcceleration() {
-			if (accelerationArray.length > 0) {
-				const sum = accelerationArray.reduce((acc, val) => acc + val, 0);
-				averageAcceleration = sum / accelerationArray.length;
-				accelerationArray = [];
+				// Das Gerät wird geschüttelt, fügen Sie hier den Code ein, den Sie ausführen möchten.
+				console.log('Gerät wird geschüttelt!');
+				document.body.style.backgroundColor = 'green';
 			} else {
-				averageAcceleration = 0;
-				isShaken = false;
+				document.body.style.backgroundColor = 'red';
 			}
 
-			const accelerationText = `Durchschnittliche Beschleunigung: ${averageAcceleration.toFixed(2)} m/s^2`;
-			document.getElementById("acceleration").innerHTML = accelerationText;
-
-			if (isShaken) {
-				document.body.classList.add("green");
-			} else {
-				document.body.classList.remove("green");
-			}
+			// Durchschnittliche Beschleunigung der letzten Sekunde berechnen und anzeigen
+			const accelerationHistory = [];
+			accelerationHistory.push(acceleration);
+			const now = Date.now();
+			const lastSecond = now - 1000;
+			const lastSecondAccelerations = accelerationHistory.filter(a => a.timestamp >= lastSecond);
+			const averageAcceleration = lastSecondAccelerations.reduce((sum, a) => sum + a, 0) / lastSecondAccelerations.length;
+			document.getElementById('acceleration').textContent = `Durchschnittliche Beschleunigung: ${averageAcceleration.toFixed(2)} m/s²`;
 		}
 	</script>
 </body>
