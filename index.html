@@ -10,6 +10,7 @@
 
       .center {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100vh;
@@ -19,16 +20,23 @@
         font-size: 20px;
         padding: 10px;
         border-radius: 5px;
+        margin-bottom: 20px;
       }
 
       .green {
         background-color: green;
+      }
+
+      #acceleration-value {
+        font-size: 24px;
+        font-weight: bold;
       }
     </style>
   </head>
   <body>
     <div class="center">
       <button onclick="startMonitoring()">Start Monitoring</button>
+      <div id="acceleration-value">-</div>
     </div>
 
     <script>
@@ -50,6 +58,14 @@
                 document.body.classList.remove("green");
               }
             }, 1000);
+
+            document.getElementById("acceleration-value").innerHTML =
+              "Acceleration: " +
+              acceleration.x.toFixed(2) +
+              ", " +
+              acceleration.y.toFixed(2) +
+              ", " +
+              acceleration.z.toFixed(2);
           });
         } else {
           alert("DeviceMotionEvent is not supported");
