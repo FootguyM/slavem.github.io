@@ -4,9 +4,16 @@
 	<title>Beschleunigungssensor-Überwachung</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		body {
+			background-color: red;
+		}
+	</style>
 </head>
 <body>
+	<h1>Beschleunigungssensor-Überwachung</h1>
 	<button onclick="startMonitoring()">Überwachung starten</button>
+	<p id="acceleration">-</p>
 
 	<script>
 		function startMonitoring() {
@@ -37,7 +44,19 @@
 			if (acceleration > threshold) {
 				// Das Gerät wird geschüttelt, fügen Sie hier den Code ein, den Sie ausführen möchten.
 				console.log('Gerät wird geschüttelt!');
+				document.body.style.backgroundColor = 'green';
+			} else {
+				document.body.style.backgroundColor = 'red';
 			}
+
+			// Durchschnittliche Beschleunigung der letzten Sekunde berechnen und anzeigen
+			const accelerationHistory = [];
+			accelerationHistory.push(acceleration);
+			const now = Date.now();
+			const lastSecond = now - 1000;
+			const lastSecondAccelerations = accelerationHistory.filter(a => a.timestamp >= lastSecond);
+			const averageAcceleration = lastSecondAccelerations.reduce((sum, a) => sum + a, 0) / lastSecondAccelerations.length;
+			document.getElementById('acceleration').textContent = `Durchschnittliche Beschleunigung: ${averageAcceleration.toFixed(2)} m/s²`;
 		}
 	</script>
 </body>
