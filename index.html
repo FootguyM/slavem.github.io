@@ -27,7 +27,6 @@
 		var velocityX = 0;
 		var velocityY = 0;
 		var velocityZ = 0;
-		var lastUpdate = Date.now();
 		var updateInterval = 500; // Update-Intervall in Millisekunden
 
 		function requestSensorAccess() {
@@ -44,44 +43,43 @@
 
 		window.addEventListener("devicemotion", function(event) {
 			if (permissionGranted) {
-				var now = Date.now();
-				var dt = (now - lastUpdate) / 1000;
-				lastUpdate = now;
-
+				// Beschleunigung in m/s^2
 				var ax = event.accelerationIncludingGravity.x;
 				var ay = event.accelerationIncludingGravity.y;
 				var az = event.accelerationIncludingGravity.z;
 
-				// Berechnung der Geschwindigkeit in den einzelnen Richtungen
+				// Zeit in Sekunden
+				var dt = event.interval / 1000;
+
+				// Geschwindigkeit in m/s
 				velocityX += ax * dt;
 				velocityY += ay * dt;
 				velocityZ += az * dt;
 
-				// Berechnung der aktuellen Beschleunigung
+				// Runde auf 2 Nachkommastellen
 				accelerationX = ax.toFixed(2);
 				accelerationY = ay.toFixed(2);
 				accelerationZ = az.toFixed(2);
+				velocityX = velocityX.toFixed(2);
+				velocityY = velocityY.toFixed(2);
+				velocityZ = velocityZ.toFixed(2);
 			}
 		});
 
 		setInterval(function() {
 			if (permissionGranted) {
-				// Anzeige der Beschleunigung
 				document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
 				document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
 				document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
-
-				// Anzeige der Geschwindigkeit
-				document.getElementById("velocity-x").innerHTML = "Geschwindigkeit X: " + velocityX.toFixed(2) + " m/s";
-				document.getElementById("velocity-y").innerHTML = "Geschwindigkeit Y: " + velocityY.toFixed(2) + " m/s";
-				document.getElementById("velocity-z").innerHTML = "Geschwindigkeit Z: " + velocityZ.toFixed(2) + " m/s";
+				document.getElementById("velocity-x").innerHTML = "Geschwindigkeit X: " + velocityX + " m/s";
+				document.getElementById("velocity-y").innerHTML = "Geschwindigkeit Y: " + velocityY + " m/s";
+				document.getElementById("velocity-z").innerHTML = "Geschwindigkeit Z: " + velocityZ + " m/s";
 			}
 		}, updateInterval);
 
 	} else {
-		alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
-	}
-</script>
+		alert
 
+</script>
 </body>
 </html>
