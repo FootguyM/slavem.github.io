@@ -1,46 +1,86 @@
+/* Globale Stile */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
   margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif;
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-p {
-  font-size: 24px;
-  margin: 10px 0;
-}
-
-button {
-  font-size: 18px;
-  padding: 10px;
-  background-color: #4CAF50;
+/* Header */
+header {
+  background-color: #333;
   color: #fff;
+  padding: 1rem;
+}
+
+header h1 {
+  margin: 0;
+}
+
+/* Hauptinhalt */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.container p {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+/* Button */
+#request-sensor-access {
+  background-color: #007bff;
+  color: #fff;
+  padding: 0.5rem 1rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 0.25rem;
   cursor: pointer;
-  margin-top: 20px;
+  font-size: 1rem;
 }
 
-button:hover {
-  background-color: #3e8e41;
+#request-sensor-access:hover {
+  background-color: #0069d9;
 }
 
-@media screen and (max-width: 600px) {
-  p {
-    font-size: 18px;
+/* Footer */
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Medienabfragen */
+@media screen and (min-width: 768px) {
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
   }
-  
-  button {
-    font-size: 16px;
-    padding: 8px;
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  #request-sensor-access {
+    font-size: 1.25rem;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .container {
+    flex-direction: row;
+  }
+
+  .container p {
+    font-size: 2rem;
+    margin-right: 1rem;
   }
 }
