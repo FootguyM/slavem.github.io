@@ -1,56 +1,63 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Beschleunigungssensor-Überwachung</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<style>
-		body {
-		    background-color: red; /* Standard-Hintergrundfarbe */
-		}
+  <head>
+    <meta charset="utf-8" />
+    <title>Shake Detector</title>
+    <style>
+      body {
+        background-color: red;
+      }
 
-		.shaken {
-		    background-color: green; /* Hintergrundfarbe, wenn das Gerät geschüttelt wird */
-		}
-	</style>
-</head>
-<body>
-	<button onclick="startMonitoring()">Überwachung starten</button>
+      .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
 
-	<script>
-		function startMonitoring() {
-			if (typeof DeviceMotionEvent.requestPermission === 'function') {
-				// Zustimmung des Benutzers einholen, um auf Beschleunigungssensoren zuzugreifen
-				DeviceMotionEvent.requestPermission().then(response => {
-					if (response == 'granted') {
-						// Ereignislistener hinzufügen, um Bewegungen des Geräts zu überwachen
-						window.addEventListener('devicemotion', handleMotionEvent);
-					}
-				}).catch(console.error);
-			} else {
-				// Das Gerät unterstützt keine Zustimmungserklärung, daher einfach Ereignislistener hinzufügen
-				window.addEventListener('devicemotion', handleMotionEvent);
-			}
-		}
+      button {
+        font-size: 20px;
+        padding: 10px;
+        border-radius: 5px;
+      }
 
-		function handleMotionEvent(event) {
-			// Schwellenwert für Bewegungserkennung festlegen
-			const threshold = 10;
+      .green {
+        background-color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="center">
+      <button onclick="startMonitoring()">Start Monitoring</button>
+    </div>
 
-			// Beschleunigungsdaten des Geräts aus dem Event-Objekt abrufen
-			const { x, y, z } = event.accelerationIncludingGravity;
+    <script>
+      function startMonitoring() {
+        let threshold = 15;
+        let shakeDetected = false;
 
-			// Berechnen Sie die Gesamtbeschleunigung des Geräts
-			const acceleration = Math.sqrt(x * x + y * y + z * z);
+        if (window.DeviceMotionEvent) {
+          window.addEventListener("devicemotion", function (event) {
+            let acceleration = event.accelerationIncludingGravity;
+            let currTime = new Date().getTime();
 
-			if (acceleration > threshold) {
-				// Das Gerät wird geschüttelt, fügen Sie hier den Code ein, den Sie ausführen möchten.
-				document.body.classList.add('shaken');
-			} else {
-				// Das Gerät wird nicht geschüttelt, entfernen Sie die CSS-Klasse "shaken"
-				document.body.classList.remove('shaken');
-			}
-		}
-	</script>
-</body>
+            setTimeout(function () {
+              let diffTime = new Date().getTime() - currTime;
+              let velocity = (acceleration.x + acceleration.y + acceleration.z) / diffTime * 10000;
+              
+              if (velocity > threshold && !shakeDetected) {
+                shakeDetected = true;
+                document.body.classList.add("green");
+              } else if (velocity < threshold && shakeDetected) {
+                shakeDetected = false;
+                document.body.classList.remove("green");
+              }
+            }, 1000);
+          });
+        } else {
+          alert("DeviceMotionEvent is not supported");
+        }
+      }
+    </script>
+  </body>
 </html>
