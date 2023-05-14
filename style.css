@@ -1,62 +1,7 @@
-/* Allgemeine Stildefinitionen */
-
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+    background-color: red; /* Standard-Hintergrundfarbe */
 }
 
-/* Stil für den Container */
-
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-/* Stil für die Überschriften und den Button */
-
-h1, h2 {
-    text-align: center;
-    margin-top: 0;
-}
-
-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 1.2rem;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0069d9;
-}
-
-/* Stil für die Beschleunigungsinformationen */
-
-p {
-    margin: 20px 0;
-    font-size: 1.5rem;
-}
-
-/* Stil für mobile Geräte */
-
-@media only screen and (max-width: 600px) {
-    h1 {
-        font-size: 2rem;
-    }
-
-    button {
-        font-size: 1rem;
-    }
-
-    p {
-        font-size: 1.2rem;
-    }
+.shaken {
+    background-color: green; /* Hintergrundfarbe, wenn das Gerät geschüttelt wird */
 }
