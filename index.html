@@ -9,33 +9,16 @@
 <body>
 
 <div class="container">
-	<p id="acceleration-x"></p>
-	<p id="acceleration-y"></p>
-	<p id="acceleration-z"></p>
-	<p id="velocity-x"></p>
-	<p id="velocity-y"></p>
-	<p id="velocity-z"></p>
-	<p id="position-x"></p>
-	<p id="position-y"></p>
-	<p id="position-z"></p>
+	<p id="shake-status"></p>
 	<button id="request-sensor-access">Berechtigung für Sensoren anfordern</button>
 </div>
 
 <script>
 if (window.DeviceMotionEvent) {
   var permissionGranted = false;
-  var accelerationX = 0;
-  var accelerationY = 0;
-  var accelerationZ = 0;
-  var velocityX = 0;
-  var velocityY = 0;
-  var velocityZ = 0;
-  var positionX = 0;
-  var positionY = 0;
-  var positionZ = 0;
-  var lastUpdate = Date.now();
-  var updateInterval = 500; // Update-Intervall in Millisekunden
-  var threshold = 0.1; // Schwellenwert für die Beschleunigung
+  var shakeStatus = false;
+  var lastShakeTime = 0;
+  var shakeThreshold = 15; // Schwellenwert für die Schüttelbewegung in m/s^2
 
   function requestSensorAccess() {
     if (typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -51,58 +34,27 @@ if (window.DeviceMotionEvent) {
 
   window.addEventListener("devicemotion", function(event) {
     if (permissionGranted) {
-      var now = Date.now();
-      var dt = (now - lastUpdate) / 1000;
-      lastUpdate = now;
-
       var ax = event.accelerationIncludingGravity.x;
       var ay = event.accelerationIncludingGravity.y;
       var az = event.accelerationIncludingGravity.z;
 
-      // Integration der Beschleunigung, um die Geschwindigkeit zu erhalten
-      if (Math.abs(ax) < threshold) {
-        velocityX = 0;
-        positionX = positionX;
+      // Berechnung der Beschleunigung ohne Integration, um die Schüttelbewegung zu ermitteln
+      var acceleration = Math.sqrt(ax * ax + ay * ay + az * az);
+      
+      // Prüfung, ob die Schüttelbewegung den Schwellenwert überschreitet
+      if (acceleration > shakeThreshold && (Date.now() - lastShakeTime) > 1000) {
+        shakeStatus = true;
+        lastShakeTime = Date.now();
       } else {
-        velocityX += (ax * dt);
-        positionX += (velocityX * dt);
+        shakeStatus = false;
       }
 
-      if (Math.abs(ay) < threshold) {
-        velocityY = 0;
-        positionY = positionY;
+      // Ausgabe der Schüttelbewegung
+      if (shakeStatus) {
+        document.getElementById("shake-status").innerHTML = "Das Gerät wird geschüttelt.";
       } else {
-        velocityY += (ay * dt);
-        positionY += (velocityY * dt);
+        document.getElementById("shake-status").innerHTML = "Das Gerät wird nicht geschüttelt.";
       }
-
-      if (Math.abs(az) < threshold) {
-        velocityZ = 0;
-        positionZ = positionZ;
-      } else {
-        velocityZ += (az * dt);
-        positionZ += (velocityZ * dt);
-      }
-
-	// Aktualisierung der aktuellen Beschleunigung
-      accelerationX = ax.toFixed(2);
-      accelerationY = ay.toFixed(2);
-      accelerationZ = az.toFixed(2);
-
-      // Ausgabe der aktuellen Beschleunigung
-      document.getElementById("acceleration-x").innerHTML = "Beschleunigung in X-Richtung: " + accelerationX + " m/s^2";
-      document.getElementById("acceleration-y").innerHTML = "Beschleunigung in Y-Richtung: " + accelerationY + " m/s^2";
-      document.getElementById("acceleration-z").innerHTML = "Beschleunigung in Z-Richtung: " + accelerationZ + " m/s^2";
-
-      // Ausgabe der aktuellen Geschwindigkeit
-      document.getElementById("velocity-x").innerHTML = "Geschwindigkeit in X-Richtung: " + velocityX.toFixed(2) + " m/s";
-      document.getElementById("velocity-y").innerHTML = "Geschwindigkeit in Y-Richtung: " + velocityY.toFixed(2) + " m/s";
-      document.getElementById("velocity-z").innerHTML = "Geschwindigkeit in Z-Richtung: " + velocityZ.toFixed(2) + " m/s";
-
-      // Ausgabe der aktuellen Position
-      document.getElementById("position-x").innerHTML = "Position in X-Richtung: " + positionX.toFixed(2) + " m";
-      document.getElementById("position-y").innerHTML = "Position in Y-Richtung: " + positionY.toFixed(2) + " m";
-      document.getElementById("position-z").innerHTML = "Position in Z-Richtung: " + positionZ.toFixed(2) + " m";
     }
   });
 } else {
@@ -112,6 +64,3 @@ if (window.DeviceMotionEvent) {
 
 </body>
 </html>
-
-
-     
