@@ -1,34 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Handy-Beschleunigungsmesser</title>
+	<title>Beschleunigungsmesser</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			font-size: 2rem;
+		}
+	</style>
 </head>
 <body>
-	<h1>Handy-Beschleunigungsmesser</h1>
-	<div>
-		<label>X-Beschleunigung:</label>
-		<span id="xAcceleration"></span>
-	</div>
-	<div>
-		<label>Y-Beschleunigung:</label>
-		<span id="yAcceleration"></span>
-	</div>
-	<div>
-		<label>Z-Beschleunigung:</label>
-		<span id="zAcceleration"></span>
-	</div>
 
-	<script>
-		if (window.DeviceMotionEvent) {
-			window.addEventListener('devicemotion', function(event) {
-				var acceleration = event.accelerationIncludingGravity;
-				document.getElementById('xAcceleration').innerHTML = acceleration.x.toFixed(2) + " m/s²";
-				document.getElementById('yAcceleration').innerHTML = acceleration.y.toFixed(2) + " m/s²";
-				document.getElementById('zAcceleration').innerHTML = acceleration.z.toFixed(2) + " m/s²";
-			});
-		} else {
-			alert("Das Gerät unterstützt die Beschleunigungsmessung nicht.");
-		}
-	</script>
+<div class="container">
+	<p id="acceleration-x"></p>
+	<p id="acceleration-y"></p>
+	<p id="acceleration-z"></p>
+</div>
+
+<script>
+	if (window.DeviceMotionEvent) {
+		window.addEventListener("devicemotion", function(event) {
+			var accelerationX = event.accelerationIncludingGravity.x.toFixed(2);
+			var accelerationY = event.accelerationIncludingGravity.y.toFixed(2);
+			var accelerationZ = event.accelerationIncludingGravity.z.toFixed(2);
+			document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
+			document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
+			document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
+		});
+	} else {
+		alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
+	}
+</script>
+
 </body>
 </html>
