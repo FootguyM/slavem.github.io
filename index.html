@@ -39,12 +39,9 @@
         if (window.DeviceMotionEvent) {
           window.addEventListener("devicemotion", function (event) {
             let acceleration = event.accelerationIncludingGravity;
-            let currTime = new Date().getTime();
+            let velocity = (acceleration.x + acceleration.y + acceleration.z) / 3;
 
             setTimeout(function () {
-              let diffTime = new Date().getTime() - currTime;
-              let velocity = (acceleration.x + acceleration.y + acceleration.z) / diffTime * 10000;
-              
               if (velocity > threshold && !shakeDetected) {
                 shakeDetected = true;
                 document.body.classList.add("green");
