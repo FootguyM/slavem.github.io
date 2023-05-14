@@ -8,61 +8,65 @@
 		body {
 			background-color: red;
 		}
-		.green {
+		.shaken {
 			background-color: green;
 		}
 	</style>
 </head>
 <body>
 	<button onclick="startMonitoring()">Überwachung starten</button>
-	<p id="acceleration"></p>
-
+	<div id="acceleration-value"></div>
+	
 	<script>
-		let accelerationArray = [];
-		let averageAcceleration = 0;
-		let isShaken = false;
-
 		function startMonitoring() {
 			if (typeof DeviceMotionEvent.requestPermission === 'function') {
+				// Zustimmung des Benutzers einholen, um auf Beschleunigungssensoren zuzugreifen
 				DeviceMotionEvent.requestPermission().then(response => {
 					if (response == 'granted') {
+						// Ereignislistener hinzufügen, um Bewegungen des Geräts zu überwachen
 						window.addEventListener('devicemotion', handleMotionEvent);
 					}
 				}).catch(console.error);
 			} else {
+				// Das Gerät unterstützt keine Zustimmungserklärung, daher einfach Ereignislistener hinzufügen
 				window.addEventListener('devicemotion', handleMotionEvent);
 			}
-			setInterval(updateAcceleration, 1000);
 		}
 
 		function handleMotionEvent(event) {
+			// Schwellenwert für Bewegungserkennung festlegen
 			const threshold = 10;
-			const { x, y, z } = event.accelerationIncludingGravity;
-			const acceleration = Math.sqrt(x * x + y * y + z * z);
+			const accelerationValues = [];
 
-			if (acceleration > threshold) {
-				isShaken = true;
-			}
-			accelerationArray.push(acceleration);
-		}
+			// Beschleunigungsdaten des Geräts aus dem Event-Objekt abrufen
+			const { z } = event.accelerationIncludingGravity;
 
-		function updateAcceleration() {
-			if (accelerationArray.length > 0) {
-				const sum = accelerationArray.reduce((acc, val) => acc + val, 0);
-				averageAcceleration = sum / accelerationArray.length;
-				accelerationArray = [];
-			} else {
-				averageAcceleration = 0;
-				isShaken = false;
+			// Berechnen Sie die Gesamtbeschleunigung des Geräts
+			const acceleration = Math.abs(z);
+
+			// Fügen Sie den aktuellen Beschleunigungswert zur Beschleunigungswertliste hinzu
+			accelerationValues.push(acceleration);
+
+			// Entfernen Sie alle Werte aus der Beschleunigungswertliste, die älter als eine Sekunde sind
+			const currentTime = new Date().getTime();
+			while (accelerationValues.length > 0 && (currentTime - accelerationValues[0].timestamp) > 1000) {
+				accelerationValues.shift();
 			}
 
-			const accelerationText = `Durchschnittliche Beschleunigung: ${averageAcceleration.toFixed(2)} m/s^2`;
-			document.getElementById("acceleration").innerHTML = accelerationText;
+			// Berechnen Sie den durchschnittlichen Beschleunigungswert der letzten Sekunde
+			const averageAcceleration = accelerationValues.reduce((acc, cur) => acc + cur.value, 0) / accelerationValues.length;
 
-			if (isShaken) {
-				document.body.classList.add("green");
+			// Geben Sie den durchschnittlichen Beschleunigungswert auf der Website aus
+			const accelerationValueDiv = document.getElementById('acceleration-value');
+			accelerationValueDiv.innerHTML = `Durchschnittliche Beschleunigung: ${averageAcceleration}`;
+
+			// Überprüfen Sie, ob das Gerät geschüttelt wird
+			if (averageAcceleration > threshold) {
+				// Das Gerät wird geschüttelt, fügen Sie hier den Code ein, den Sie ausführen möchten.
+				console.log('Gerät wird geschüttelt!');
+				document.body.classList.add('shaken');
 			} else {
-				document.body.classList.remove("green");
+				document.body.classList.remove('shaken');
 			}
 		}
 	</script>
