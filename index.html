@@ -19,68 +19,79 @@
 </div>
 
 <script>
-	if (window.DeviceMotionEvent) {
-		var permissionGranted = false;
-		var accelerationX = 0;
-		var accelerationY = 0;
-		var accelerationZ = 0;
-		var velocityX = 0;
-		var velocityY = 0;
-		var velocityZ = 0;
-		var lastUpdate = Date.now();
-		var updateInterval = 500; // Update-Intervall in Millisekunden
+if (window.DeviceMotionEvent) {
+  var permissionGranted = false;
+  var accelerationX = 0;
+  var accelerationY = 0;
+  var accelerationZ = 0;
+  var velocityX = 0;
+  var velocityY = 0;
+  var velocityZ = 0;
+  var positionX = 0;
+  var positionY = 0;
+  var positionZ = 0;
+  var lastUpdate = Date.now();
+  var updateInterval = 500; // Update-Intervall in Millisekunden
 
-		function requestSensorAccess() {
-			if (typeof DeviceMotionEvent.requestPermission === 'function') {
-				DeviceMotionEvent.requestPermission().then(permissionState => {
-					if (permissionState === 'granted') {
-						permissionGranted = true;
-					}
-				}).catch(console.error);
-			}
-		}
+  function requestSensorAccess() {
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission().then(permissionState => {
+        if (permissionState === 'granted') {
+          permissionGranted = true;
+        }
+      }).catch(console.error);
+    }
+  }
 
-		document.getElementById('request-sensor-access').addEventListener('click', requestSensorAccess);
+  document.getElementById('request-sensor-access').addEventListener('click', requestSensorAccess);
 
-		window.addEventListener("devicemotion", function(event) {
-			if (permissionGranted) {
-				var now = Date.now();
-				var dt = (now - lastUpdate) / 1000;
-				lastUpdate = now;
+  window.addEventListener("devicemotion", function(event) {
+    if (permissionGranted) {
+      var now = Date.now();
+      var dt = (now - lastUpdate) / 1000;
+      lastUpdate = now;
 
-				var ax = event.accelerationIncludingGravity.x;
-				var ay = event.accelerationIncludingGravity.y;
-				var az = event.accelerationIncludingGravity.z;
+      var ax = event.accelerationIncludingGravity.x;
+      var ay = event.accelerationIncludingGravity.y;
+      var az = event.accelerationIncludingGravity.z;
 
-				// Berechnung der Geschwindigkeit in den einzelnen Richtungen
-				velocityX += ax * dt;
-				velocityY += ay * dt;
-				velocityZ += az * dt;
+      // Integration der Beschleunigung, um die Geschwindigkeit zu erhalten
+      velocityX += (ax * dt);
+      velocityY += (ay * dt);
+      velocityZ += (az * dt);
 
-				// Berechnung der aktuellen Beschleunigung
-				accelerationX = ax.toFixed(2);
-				accelerationY = ay.toFixed(2);
-				accelerationZ = az.toFixed(2);
-			}
-		});
+      // Integration der Geschwindigkeit, um die Position zu erhalten
+      positionX += (velocityX * dt);
+      positionY += (velocityY * dt);
+      positionZ += (velocityZ * dt);
 
-		setInterval(function() {
-			if (permissionGranted) {
-				// Anzeige der Beschleunigung
-				document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
-				document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
-				document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
+      // Aktualisierung der aktuellen Beschleunigung
+      accelerationX = ax.toFixed(2);
+      accelerationY = ay.toFixed(2);
+      accelerationZ = az.toFixed(2);
+    }
+  });
 
-				// Anzeige der Geschwindigkeit
-				document.getElementById("velocity-x").innerHTML = "Geschwindigkeit X: " + velocityX.toFixed(2) + " m/s";
-				document.getElementById("velocity-y").innerHTML = "Geschwindigkeit Y: " + velocityY.toFixed(2) + " m/s";
-				document.getElementById("velocity-z").innerHTML = "Geschwindigkeit Z: " + velocityZ.toFixed(2) + " m/s";
-			}
-		}, updateInterval);
+  setInterval(function() {
+    if (permissionGranted) {
+      // Anzeige der Beschleunigung
+      document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
+      document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
+      document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
 
-	} else {
-		alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
-	}
+      // Anzeige der Geschwindigkeit
+      document.getElementById("velocity-x").innerHTML = "Geschwindigkeit X: " + velocityX.toFixed(2) + " m/s";
+      document.getElementById("velocity-y").innerHTML = "Geschwindigkeit Y: " + velocityY.toFixed(2) + " m/s";
+      document.getElementById("velocity-z").innerHTML = "Geschwindigkeit Z: " + velocityZ.toFixed(2) + " m/s";
+
+      // Anzeige der Position
+      document.getElementById("position-x").innerHTML = "Position X: " + positionX.toFixed(2) + " m";
+      document.getElementById("position-y").innerHTML = "Position Y: " + positionY.toFixed(2) + " m";
+      document.getElementById("position-z").innerHTML = "Position Z: " + positionZ.toFixed(2) + " m";
+    }
+  }, updateInterval);
+}
+
 </script>
 </body>
 </html>
