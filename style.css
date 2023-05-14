@@ -1,22 +1,39 @@
+body {
+  background-color: #f7f7f7;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+}
+
 .container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
 }
 
-#speed {
-  font-size: 3rem;
-  margin-bottom: 2rem;
+p {
+  margin: 10px 0;
 }
 
-button {
-  font-size: 1.5rem;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  border: none;
-  background-color: #0077FF;
+#request-sensor-access {
+  background-color: #4CAF50;
   color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 0;
   cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s ease-in-out;
 }
+
+#request-sensor-access:hover {
+  background-color: #3e8e41;
+}
+
