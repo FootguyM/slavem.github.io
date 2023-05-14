@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Geschwindigkeitsmesser</title>
+	<title>Beschleunigungsmesser</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -9,18 +9,18 @@
 <body>
 
 <div class="container">
-	<p id="speed"></p>
+	<p id="acceleration-x"></p>
+	<p id="acceleration-y"></p>
+	<p id="acceleration-z"></p>
 	<button id="request-sensor-access">Berechtigung für Sensoren anfordern</button>
 </div>
 
 <script>
 	if (window.DeviceMotionEvent) {
 		var permissionGranted = false;
-		var lastAccelerationX = 0;
-		var lastAccelerationY = 0;
-		var lastAccelerationZ = 0;
-		var lastTimestamp = 0;
-		var speed = 0;
+		var accelerationX = 0;
+		var accelerationY = 0;
+		var accelerationZ = 0;
 
 		function requestSensorAccess() {
 			if (typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -36,27 +36,12 @@
 
 		window.addEventListener("devicemotion", function(event) {
 			if (permissionGranted) {
-				var accelerationX = event.accelerationIncludingGravity.x;
-				var accelerationY = event.accelerationIncludingGravity.y;
-				var accelerationZ = event.accelerationIncludingGravity.z;
-				var timestamp = event.timestamp;
-
-				if (lastTimestamp !== 0) {
-					var timeDelta = (timestamp - lastTimestamp) / 1000; // in seconds
-					var accelerationDeltaX = accelerationX - lastAccelerationX;
-					var accelerationDeltaY = accelerationY - lastAccelerationY - 9.81; // subtract Earth's gravitational acceleration from Y axis
-					var accelerationDeltaZ = accelerationZ - lastAccelerationZ;
-
-					speed += accelerationDeltaY * timeDelta; // integrate acceleration over time to get speed
-					speed = Math.max(speed, 0); // speed cannot be negative
-
-					document.getElementById("speed").innerHTML = "Geschwindigkeit: " + speed.toFixed(2) + " m/s";
-				}
-
-				lastAccelerationX = accelerationX;
-				lastAccelerationY = accelerationY;
-				lastAccelerationZ = accelerationZ;
-				lastTimestamp = timestamp;
+				accelerationX = event.accelerationIncludingGravity.x.toFixed(2);
+				accelerationY = event.accelerationIncludingGravity.y.toFixed(2);
+				accelerationZ = event.accelerationIncludingGravity.z.toFixed(2);
+				document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
+				document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
+				document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
 			}
 		});
 	} else {
