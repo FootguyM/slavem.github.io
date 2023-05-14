@@ -21,9 +21,7 @@
 		var accelerationX = 0;
 		var accelerationY = 0;
 		var accelerationZ = 0;
-		var accelerationListX = [];
-		var accelerationListY = [];
-		var accelerationListZ = [];
+		var updateInterval = 500; // Update-Intervall in Millisekunden
 
 		function requestSensorAccess() {
 			if (typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -37,38 +35,27 @@
 
 		document.getElementById('request-sensor-access').addEventListener('click', requestSensorAccess);
 
-		setInterval(function() {
-			if (permissionGranted) {
-				accelerationX = calculateAverage(accelerationListX);
-				accelerationY = calculateAverage(accelerationListY);
-				accelerationZ = calculateAverage(accelerationListZ);
-				document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX.toFixed(2) + " m/s²";
-				document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY.toFixed(2) + " m/s²";
-				document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ.toFixed(2) + " m/s²";
-			}
-		}, 1000);
-
 		window.addEventListener("devicemotion", function(event) {
 			if (permissionGranted) {
-				accelerationListX.push(event.accelerationIncludingGravity.x);
-				accelerationListY.push(event.accelerationIncludingGravity.y);
-				accelerationListZ.push(event.accelerationIncludingGravity.z);
+				accelerationX = event.accelerationIncludingGravity.x.toFixed(2);
+				accelerationY = event.accelerationIncludingGravity.y.toFixed(2);
+				accelerationZ = event.accelerationIncludingGravity.z.toFixed(2);
 			}
 		});
 
-		function calculateAverage(list) {
-			if (list.length === 0) {
-				return 0;
+		setInterval(function() {
+			if (permissionGranted) {
+				document.getElementById("acceleration-x").innerHTML = "Beschleunigung X: " + accelerationX + " m/s²";
+				document.getElementById("acceleration-y").innerHTML = "Beschleunigung Y: " + accelerationY + " m/s²";
+				document.getElementById("acceleration-z").innerHTML = "Beschleunigung Z: " + accelerationZ + " m/s²";
 			}
-			var sum = list.reduce(function(a, b) {
-				return a + b;
-			});
-			return sum / list.length;
-		}
+		}, updateInterval);
+
 	} else {
 		alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
 	}
 </script>
+	<p>2</p>
 
 </body>
 </html>
