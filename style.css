@@ -1,7 +1,23 @@
+/* styles.css */
+
 body {
-    background-color: red; /* Standard-Hintergrundfarbe */
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
-.shaken {
-    background-color: green; /* Hintergrundfarbe, wenn das Gerät geschüttelt wird */
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
 }
+
+button:hover {
+  background-color: #45a049;
+}
+
