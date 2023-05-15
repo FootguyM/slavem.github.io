@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background-color: red;
+    }
+  </style>
 </head>
 <body>
   <button onclick="requestMotionPermission()">Zugriff auf Bewegungssensoren anfordern</button>
   
   <script>
+    var shakeTimeout; // Timeout-Variable
+    
     // Funktion zur Überprüfung, ob das Gerät geschüttelt wird
     function onDeviceMotion(event) {
       var acceleration = event.accelerationIncludingGravity;
@@ -22,9 +28,13 @@
       
       // Überprüfung, ob das Gerät geschüttelt wird
       if (totalAcceleration > shakeThreshold) {
+        clearTimeout(shakeTimeout); // Vorheriges Timeout löschen
         document.body.style.backgroundColor = "green"; // Hintergrund grün setzen
-      } else {
-        document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
+        
+        // Timeout setzen, um den Hintergrund nach 1 Sekunde wieder auf rot zu setzen
+        shakeTimeout = setTimeout(function() {
+          document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
+        }, 1000);
       }
     }
     
