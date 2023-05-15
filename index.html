@@ -8,54 +8,43 @@
   </style>
 </head>
 <body>
+  <button onclick="requestMotionPermission()">Zugriff auf Bewegungssensoren anfordern</button>
+  
   <script>
-    // Variablen zur Erfassung des Ausgangszustands
-    var x0, y0, z0;
-    
-    // Schwellenwert für die Erschütterung (experimentell anpassen)
-    var shakeThreshold = 15;
-    
-    // Überprüfung, ob das Gerät geschüttelt wird
+    // Funktion zur Überprüfung, ob das Gerät geschüttelt wird
     function onDeviceMotion(event) {
       var acceleration = event.accelerationIncludingGravity;
+      var shakeThreshold = 15; // Schwellenwert für die Erschütterung (experimentell anpassen)
       
-      // Erfassen der Beschleunigung in x-, y- und z-Richtung
+      // Berechnung der Beschleunigung in x-, y- und z-Richtung
       var accelerationX = acceleration.x;
       var accelerationY = acceleration.y;
       var accelerationZ = acceleration.z;
       
-      // Überprüfen, ob der Ausgangszustand festgelegt ist
-      if (x0 === undefined && y0 === undefined && z0 === undefined) {
-        x0 = accelerationX;
-        y0 = accelerationY;
-        z0 = accelerationZ;
-        return;
-      }
-      
-      // Berechnung der Änderung der Beschleunigung in x-, y- und z-Richtung
-      var deltaX = Math.abs(x0 - accelerationX);
-      var deltaY = Math.abs(y0 - accelerationY);
-      var deltaZ = Math.abs(z0 - accelerationZ);
-      
-      // Aktualisieren des Ausgangszustands
-      x0 = accelerationX;
-      y0 = accelerationY;
-      z0 = accelerationZ;
+      // Berechnung der Gesamtbeschleunigung
+      var totalAcceleration = Math.sqrt(Math.pow(accelerationX, 2) + Math.pow(accelerationY, 2) + Math.pow(accelerationZ, 2));
       
       // Überprüfung, ob das Gerät geschüttelt wird
-      if (deltaX > shakeThreshold || deltaY > shakeThreshold || deltaZ > shakeThreshold) {
+      if (totalAcceleration > shakeThreshold) {
         document.body.style.backgroundColor = "green"; // Hintergrund grün setzen
       } else {
         document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
       }
     }
     
-    // Überprüfen, ob der Browser die Bewegungssensoren unterstützt
-    if (window.DeviceMotionEvent) {
-      // Eventlistener hinzufügen
-      window.addEventListener('devicemotion', onDeviceMotion);
-    } else {
-      alert("Bewegungssensoren werden nicht unterstützt.");
+    // Funktion zum Anfordern des Zugriffs auf die Bewegungssensoren
+    function requestMotionPermission() {
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission()
+          .then(permissionState => {
+            if (permissionState === 'granted') {
+              window.addEventListener('devicemotion', onDeviceMotion);
+            }
+          })
+          .catch(console.error);
+      } else {
+        alert("Bewegungssensoren werden nicht unterstützt.");
+      }
     }
   </script>
 </body>
