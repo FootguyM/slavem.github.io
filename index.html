@@ -12,22 +12,29 @@
   
   <script>
     var shakeTimeout; // Timeout-Variable
+    var accelerationHistory = []; // Array zur Speicherung der Beschleunigungswerte
     
     // Funktion zur Überprüfung, ob das Gerät geschüttelt wird
     function onDeviceMotion(event) {
       var acceleration = event.accelerationIncludingGravity;
       var shakeThreshold = 15; // Schwellenwert für die Erschütterung (experimentell anpassen)
-      
-      // Berechnung der Beschleunigung in x-, y- und z-Richtung
       var accelerationX = acceleration.x;
       var accelerationY = acceleration.y;
       var accelerationZ = acceleration.z;
-      
-      // Berechnung der Gesamtbeschleunigung
       var totalAcceleration = Math.sqrt(Math.pow(accelerationX, 2) + Math.pow(accelerationY, 2) + Math.pow(accelerationZ, 2));
       
+      accelerationHistory.push(totalAcceleration); // Aktuellen Beschleunigungswert zum Array hinzufügen
+      
+      // Überprüfen, ob die Länge des Arrays größer als 20 ist (entspricht 2 Sekunden bei 10 Ereignissen pro Sekunde)
+      if (accelerationHistory.length > 20) {
+        accelerationHistory.shift(); // Ältesten Wert aus dem Array entfernen
+      }
+      
+      // Berechnung des Durchschnitts der Beschleunigungswerte
+      var averageAcceleration = accelerationHistory.reduce((a, b) => a + b, 0) / accelerationHistory.length;
+      
       // Überprüfung, ob das Gerät geschüttelt wird
-      if (totalAcceleration > shakeThreshold) {
+      if (averageAcceleration > shakeThreshold) {
         clearTimeout(shakeTimeout); // Vorheriges Timeout löschen
         document.body.style.backgroundColor = "green"; // Hintergrund grün setzen
         
