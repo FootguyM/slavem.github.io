@@ -1,76 +1,66 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Shake Detector</title>
-    <style>
-      body {
-        background-color: red;
-      }
+<head>
+	<title>Beschleunigungsmesser</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
 
-      .center {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
+<div class="container">
+	<p id="shake-status"></p>
+	<button id="request-sensor-access">Berechtigung für Sensoren anfordern</button>
+</div>
 
-      button {
-        font-size: 20px;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-      }
+<script>
+if (window.DeviceMotionEvent) {
+  var permissionGranted = false;
+  var shakeStatus = false;
+  var lastShakeTime = 0;
+  var shakeThreshold = 15; // Schwellenwert für die Schüttelbewegung in m/s^2
 
-      .green {
-        background-color: green;
-      }
-
-      #acceleration-value {
-        font-size: 24px;
-        font-weight: bold;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="center">
-      <button onclick="startMonitoring()">Start Monitoring</button>
-      <div id="acceleration-value">-</div>
-    </div>
-
-    <script>
-      function startMonitoring() {
-        let threshold = 15;
-        let shakeDetected = false;
-
-        if (window.DeviceMotionEvent) {
-          window.addEventListener("devicemotion", function (event) {
-            let acceleration = event.accelerationIncludingGravity;
-            let velocity = (acceleration.x + acceleration.y + acceleration.z) / 3;
-
-            setTimeout(function () {
-              if (velocity > threshold && !shakeDetected) {
-                shakeDetected = true;
-                document.body.classList.add("green");
-              } else if (velocity < threshold && shakeDetected) {
-                shakeDetected = false;
-                document.body.classList.remove("green");
-              }
-            }, 1000);
-
-            document.getElementById("acceleration-value").innerHTML =
-              "Acceleration: " +
-              acceleration.x.toFixed(2) +
-              ", " +
-              acceleration.y.toFixed(2) +
-              ", " +
-              acceleration.z.toFixed(2);
-          });
-        } else {
-          alert("DeviceMotionEvent is not supported");
+  function requestSensorAccess() {
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission().then(permissionState => {
+        if (permissionState === 'granted') {
+          permissionGranted = true;
         }
+      }).catch(console.error);
+    }
+  }
+
+  document.getElementById('request-sensor-access').addEventListener('click', requestSensorAccess);
+
+  window.addEventListener("devicemotion", function(event) {
+    if (permissionGranted) {
+      var ax = event.accelerationIncludingGravity.x;
+      var ay = event.accelerationIncludingGravity.y;
+      var az = event.accelerationIncludingGravity.z;
+
+      // Berechnung der Beschleunigung ohne Integration, um die Schüttelbewegung zu ermitteln
+      var acceleration = Math.sqrt(ax * ax + ay * ay + az * az);
+      
+      // Prüfung, ob die Schüttelbewegung den Schwellenwert überschreitet
+      if (acceleration > shakeThreshold && (Date.now() - lastShakeTime) > 1000) {
+        shakeStatus = true;
+        lastShakeTime = Date.now();
+      } else {
+        shakeStatus = false;
       }
-    </script>
-  </body>
+
+      // Ausgabe der Schüttelbewegung
+      if (shakeStatus) {
+        document.getElementById("shake-status").innerHTML = "Das Gerät wird geschüttelt.";
+      } else {
+        document.getElementById("shake-status").innerHTML = "Das Gerät wird nicht geschüttelt.";
+      }
+    }
+  });
+} else {
+  alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
+}
+</script>
+
+</body>
 </html>
