@@ -1,66 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Beschleunigungsmesser</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="style.css">
+  <style>
+    body {
+      background-color: red;
+    }
+  </style>
 </head>
 <body>
-
-<div class="container">
-	<p id="shake-status"></p>
-	<button id="request-sensor-access">Berechtigung für Sensoren anfordern</button>
-</div>
-
-<script>
-if (window.DeviceMotionEvent) {
-  var permissionGranted = false;
-  var shakeStatus = false;
-  var lastShakeTime = 0;
-  var shakeThreshold = 15; // Schwellenwert für die Schüttelbewegung in m/s^2
-
-  function requestSensorAccess() {
-    if (typeof DeviceMotionEvent.requestPermission === 'function') {
-      DeviceMotionEvent.requestPermission().then(permissionState => {
-        if (permissionState === 'granted') {
-          permissionGranted = true;
-        }
-      }).catch(console.error);
-    }
-  }
-
-  document.getElementById('request-sensor-access').addEventListener('click', requestSensorAccess);
-
-  window.addEventListener("devicemotion", function(event) {
-    if (permissionGranted) {
-      var ax = event.accelerationIncludingGravity.x;
-      var ay = event.accelerationIncludingGravity.y;
-      var az = event.accelerationIncludingGravity.z;
-
-      // Berechnung der Beschleunigung ohne Integration, um die Schüttelbewegung zu ermitteln
-      var acceleration = Math.sqrt(ax * ax + ay * ay + az * az);
+  <script>
+    // Funktion zur Überprüfung, ob das Gerät geschüttelt wird
+    function onDeviceMotion(event) {
+      var acceleration = event.accelerationIncludingGravity;
+      var shakeThreshold = 15; // Schwellenwert für die Erschütterung (experimentell anpassen)
       
-      // Prüfung, ob die Schüttelbewegung den Schwellenwert überschreitet
-      if (acceleration > shakeThreshold && (Date.now() - lastShakeTime) > 1000) {
-        shakeStatus = true;
-        lastShakeTime = Date.now();
+      // Berechnung der Beschleunigung in x-, y- und z-Richtung
+      var accelerationX = acceleration.x;
+      var accelerationY = acceleration.y;
+      var accelerationZ = acceleration.z;
+      
+      // Berechnung der Gesamtbeschleunigung
+      var totalAcceleration = Math.sqrt(Math.pow(accelerationX, 2) + Math.pow(accelerationY, 2) + Math.pow(accelerationZ, 2));
+      
+      // Überprüfung, ob das Gerät geschüttelt wird
+      if (totalAcceleration > shakeThreshold) {
+        document.body.style.backgroundColor = "green"; // Hintergrund grün setzen
       } else {
-        shakeStatus = false;
-      }
-
-      // Ausgabe der Schüttelbewegung
-      if (shakeStatus) {
-        document.getElementById("shake-status").innerHTML = "Das Gerät wird geschüttelt.";
-      } else {
-        document.getElementById("shake-status").innerHTML = "Das Gerät wird nicht geschüttelt.";
+        document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
       }
     }
-  });
-} else {
-  alert("Dein Gerät unterstützt keinen Beschleunigungssensor.");
-}
-</script>
-
+    
+    // Überprüfen, ob der Browser die Bewegungssensoren unterstützt
+    if (window.DeviceMotionEvent) {
+      // Eventlistener hinzufügen
+      window.addEventListener('devicemotion', onDeviceMotion);
+    } else {
+      alert("Bewegungssensoren werden nicht unterstützt.");
+    }
+  </script>
 </body>
 </html>
