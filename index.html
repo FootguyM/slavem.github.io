@@ -41,6 +41,10 @@
         shakeTimeout = setTimeout(function() {
           document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
         }, 1000);
+        
+        // Daten an den Raspberry Pi Pico senden
+        socket.send("Shake Detected");
+      }
     }
     
     // Funktion zum Anfordern des Zugriffs auf die Bewegungssensoren
