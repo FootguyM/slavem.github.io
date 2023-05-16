@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <button onclick="requestMotionPermission()">Zugriff auf Bewegungssensoren anfordern</button>
@@ -10,10 +10,7 @@
     var shakeTimeout; // Timeout-Variable
     var accelerationHistory = []; // Array zur Speicherung der Beschleunigungswerte
     
-    // WebSocket-Verbindung zum Raspberry Pi Pico
-    var socket = new WebSocket('ws://79.254.161.42:8080');
-    
-    // Funktion zur Überprüfung, ob das Gerät geschüttelt wird und Daten an den Raspberry Pi Pico senden
+    // Funktion zur Überprüfung, ob das Gerät geschüttelt wird
     function onDeviceMotion(event) {
       var acceleration = event.accelerationIncludingGravity;
       var shakeThreshold = 15; // Schwellenwert für die Erschütterung (experimentell anpassen)
@@ -41,13 +38,6 @@
         shakeTimeout = setTimeout(function() {
           document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
         }, 1000);
-        
-        // Daten an den Raspberry Pi Pico senden
-        var data = {
-          isShaking: true // Variable, die den Schüttelstatus repräsentiert
-        };
-        
-        socket.send(JSON.stringify(data)); // Daten als JSON an den Raspberry Pi Pico senden
       }
     }
     
