@@ -11,7 +11,7 @@
     var accelerationHistory = []; // Array zur Speicherung der Beschleunigungswerte
     
     // WebSocket-Verbindung zum Raspberry Pi Pico
-    var socket = new WebSocket('ws://<IP-ADRESSE DES RASPBERRY PI PICO>:<PORT>');
+    var socket = new WebSocket('ws://79.254.161.42:8080');
     
     // Funktion zur Überprüfung, ob das Gerät geschüttelt wird und Daten an den Raspberry Pi Pico senden
     function onDeviceMotion(event) {
