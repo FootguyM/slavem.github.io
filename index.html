@@ -42,13 +42,6 @@
           document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
         }, 1000);
         
-        // Daten an den Raspberry Pi Pico senden
-        var data = {
-          isShaking: true // Variable, die den Schüttelstatus repräsentiert
-        };
-        
-        socket.send(JSON.stringify(data)); // Daten als JSON an den Raspberry Pi Pico senden
-      }
     }
     
     // Funktion zum Anfordern des Zugriffs auf die Bewegungssensoren
@@ -65,6 +58,29 @@
         alert("Bewegungssensoren werden nicht unterstützt.");
       }
     }
+  </script>
+  <script>
+    function sendSignalToRP2040() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "http://192.168.2.117:8080/signal", true);  // Anpassen der IP-Adresse und des Endpunkts
+  xhr.setRequestHeader("Content-Type", "application/json");
+  
+  var data = {
+    signal: "example_signal"  // Anpassen des übertragenen Signals
+  };
+  
+  xhr.send(JSON.stringify(data));
+  
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 200) {
+        console.log("Signal erfolgreich an RP2040 gesendet.");
+      } else {
+        console.error("Fehler beim Senden des Signals an RP2040:", xhr.status);
+      }
+    }
+  }
+}
   </script>
 </body>
 </html>
