@@ -10,10 +10,7 @@
     var shakeTimeout; // Timeout-Variable
     var accelerationHistory = []; // Array zur Speicherung der Beschleunigungswerte
     
-    // WebSocket-Verbindung zum RP2040
-    var socket = new WebSocket('ws://<RP2040-IP-Adresse>:<RP2040-Port>');
-    
-    // Funktion zur Überprüfung, ob das Gerät geschüttelt wird und Senden des Status an den RP2040
+    // Funktion zur Überprüfung, ob das Gerät geschüttelt wird
     function onDeviceMotion(event) {
       var acceleration = event.accelerationIncludingGravity;
       var shakeThreshold = 15; // Schwellenwert für die Erschütterung (experimentell anpassen)
@@ -37,9 +34,6 @@
         clearTimeout(shakeTimeout); // Vorheriges Timeout löschen
         document.body.style.backgroundColor = "green"; // Hintergrund grün setzen
         
-        // Status an den RP2040 senden
-        socket.send("shaking");
-        
         // Timeout setzen, um den Hintergrund nach 1 Sekunde wieder auf rot zu setzen
         shakeTimeout = setTimeout(function() {
           document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
@@ -62,19 +56,5 @@
       }
     }
   </script>
-<script>
-    // WebSocket-Verbindung zum RP2040
-    var socket = new WebSocket('ws://<RP2040-IP-Adresse>:<RP2040-Port>');
-    
-    // Funktion zum Empfangen des Status vom RP2040
-    socket.onmessage = function(event) {
-      var status = event.data;
-      if (status === 'shaking') {
-        // Das Gerät wurde geschüttelt, führe entsprechende Aktion aus
-        // Zum Beispiel: Schalte eine LED ein
-        // Hier können Sie den Code für den RP2040 einfügen, um die gewünschte Aktion auszuführen
-      }
-    }
-</script>
 </body>
 </html>
