@@ -11,7 +11,20 @@
     var accelerationHistory = []; // Array zur Speicherung der Beschleunigungswerte
     
     // WebSocket-Verbindung zum Raspberry Pi Pico
-    var socket = new WebSocket('ws://192.168.2.117:80');
+    var socket = new WebSocket('ws://192.168.2.117:80'); // WebSocket-URL anpassen
+    
+    // WebSocket-Ereignishandler
+    socket.onopen = function(event) {
+      console.log("WebSocket-Verbindung hergestellt.");
+    };
+
+    socket.onclose = function(event) {
+      console.log("WebSocket-Verbindung geschlossen.");
+    };
+
+    socket.onerror = function(error) {
+      console.error("WebSocket-Fehler:", error);
+    };
     
     // Funktion zur Überprüfung, ob das Gerät geschüttelt wird und Daten an den Raspberry Pi Pico senden
     function onDeviceMotion(event) {
@@ -43,7 +56,10 @@
         }, 1000);
         
         // Daten an den Raspberry Pi Pico senden
-        socket.send("Shake Detected");
+        var message = {
+          status: "shaken"
+        };
+        socket.send(JSON.stringify(message));
       }
     }
     
@@ -59,8 +75,8 @@
           .catch(console.error);
       } else {
         alert("Bewegungssensoren werden nicht unterstützt.");
-      }
-    }
+  }
+}
   </script>
 </body>
 </html>
