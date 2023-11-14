@@ -36,11 +36,9 @@
       if (averageAcceleration > shakeThreshold) {
         clearTimeout(shakeTimeout); // Vorheriges Timeout löschen
         document.body.style.backgroundColor = "green"; // Hintergrund grün setzen
-        socket.send("shaken");
       } else {
         clearTimeout(shakeTimeout); // Vorheriges Timeout löschen, falls das Gerät nicht mehr geschüttelt wird
         document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
-        socket.send("not_shaken");
       }
 
       // Timeout setzen, um den Hintergrund nach 1 Sekunde wieder auf rot zu setzen
