@@ -40,7 +40,7 @@
       accelerationHistory.push(totalAcceleration); // Aktuellen Beschleunigungswert zum Array hinzufügen
 
       // Überprüfen, ob die Länge des Arrays größer als 20 ist (entspricht 2 Sekunden bei 10 Ereignissen pro Sekunde)
-      if (accelerationHistory.length > 20) {
+      if (accelerationHistory.length > 30) {
         accelerationHistory.shift(); // Ältesten Wert aus dem Array entfernen
       }
 
