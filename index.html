@@ -48,14 +48,13 @@
       if (averageAcceleration > shakeThreshold) {
         clearTimeout(shakeTimeout); // Vorheriges Timeout löschen
         document.body.style.backgroundColor = "green"; // Hintergrund grün setzen
+        socket.send("shaken");
 
         // Timeout setzen, um den Hintergrund nach 1 Sekunde wieder auf rot zu setzen
         shakeTimeout = setTimeout(function() {
           document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
+          socket.send("n_shaken");
         }, 1000);
-
-        // Daten an den Raspberry Pi Pico senden
-        socket.send("shaken");
       }
     }
 
