@@ -5,10 +5,25 @@
 </head>
 <body>
   <button onclick="requestMotionPermission()">Zugriff auf Bewegungssensoren anfordern</button>
-  
+
   <script>
     var shakeTimeout; // Timeout-Variable
     var accelerationHistory = []; // Array zur Speicherung der Beschleunigungswerte
+
+    // WebSocket-Verbindung zum Raspberry Pi Pico
+    var socket = new WebSocket('ws://<Raspberry-Pico-IP>:80'); // IP entsprechend anpassen
+
+    socket.onopen = function(event) {
+      console.log("WebSocket-Verbindung hergestellt.");
+    };
+
+    socket.onclose = function(event) {
+      console.log("WebSocket-Verbindung geschlossen.");
+    };
+
+    socket.onerror = function(error) {
+      console.error("WebSocket-Fehler:", error);
+    };
 
     // Funktion zur Überprüfung, ob das Gerät geschüttelt wird und Daten an den Raspberry Pi Pico senden
     function onDeviceMotion(event) {
@@ -18,29 +33,32 @@
       var accelerationY = acceleration.y;
       var accelerationZ = acceleration.z;
       var totalAcceleration = Math.sqrt(Math.pow(accelerationX, 2) + Math.pow(accelerationY, 2) + Math.pow(accelerationZ, 2));
-      
+
       accelerationHistory.push(totalAcceleration); // Aktuellen Beschleunigungswert zum Array hinzufügen
-      
+
       // Überprüfen, ob die Länge des Arrays größer als 20 ist (entspricht 2 Sekunden bei 10 Ereignissen pro Sekunde)
       if (accelerationHistory.length > 20) {
         accelerationHistory.shift(); // Ältesten Wert aus dem Array entfernen
       }
-      
+
       // Berechnung des Durchschnitts der Beschleunigungswerte
       var averageAcceleration = accelerationHistory.reduce((a, b) => a + b, 0) / accelerationHistory.length;
-      
+
       // Überprüfung, ob das Gerät geschüttelt wird
       if (averageAcceleration > shakeThreshold) {
         clearTimeout(shakeTimeout); // Vorheriges Timeout löschen
         document.body.style.backgroundColor = "green"; // Hintergrund grün setzen
-        
+
         // Timeout setzen, um den Hintergrund nach 1 Sekunde wieder auf rot zu setzen
         shakeTimeout = setTimeout(function() {
           document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
         }, 1000);
+
+        // Daten an den Raspberry Pi Pico senden
+        socket.send("shaken");
       }
     }
-    
+
     // Funktion zum Anfordern des Zugriffs auf die Bewegungssensoren
     function requestMotionPermission() {
       if (typeof DeviceMotionEvent.requestPermission === 'function') {
@@ -53,8 +71,8 @@
           .catch(console.error);
       } else {
         alert("Bewegungssensoren werden nicht unterstützt.");
-  }
-}
+      }
+    }
   </script>
 </body>
 </html>
