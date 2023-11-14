@@ -9,23 +9,7 @@
   <script>
     var shakeTimeout; // Timeout-Variable
     var accelerationHistory = []; // Array zur Speicherung der Beschleunigungswerte
-    
-    // WebSocket-Verbindung zum Raspberry Pi Pico
-    var socket = new WebSocket('ws://192.168.2.117:80'); // WebSocket-URL anpassen
-    
-    // WebSocket-Ereignishandler
-    socket.onopen = function(event) {
-      console.log("WebSocket-Verbindung hergestellt.");
-    };
 
-    socket.onclose = function(event) {
-      console.log("WebSocket-Verbindung geschlossen.");
-    };
-
-    socket.onerror = function(error) {
-      console.error("WebSocket-Fehler:", error);
-    };
-    
     // Funktion zur Überprüfung, ob das Gerät geschüttelt wird und Daten an den Raspberry Pi Pico senden
     function onDeviceMotion(event) {
       var acceleration = event.accelerationIncludingGravity;
@@ -54,12 +38,6 @@
         shakeTimeout = setTimeout(function() {
           document.body.style.backgroundColor = "red"; // Hintergrund rot setzen
         }, 1000);
-        
-        // Daten an den Raspberry Pi Pico senden
-        var message = {
-          status: "shaken"
-        };
-        socket.send(JSON.stringify(message));
       }
     }
     
