@@ -11,7 +11,7 @@
     var accelerationHistory = []; // Array zur Speicherung der Beschleunigungswerte
 
     // WebSocket-Verbindung zum Raspberry Pi Pico
-    var socket = new WebSocket('ws://<Raspberry-Pico-IP>:80'); // IP entsprechend anpassen
+    var socket = new WebSocket('ws://192.168.2.104:80'); // IP entsprechend anpassen
 
     socket.onopen = function(event) {
       console.log("WebSocket-Verbindung hergestellt.");
